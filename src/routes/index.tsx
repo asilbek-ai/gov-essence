@@ -1,29 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Hero } from "@/components/home/Hero";
+import { Destinations } from "@/components/home/Destinations";
+import { Hotels, Restaurants } from "@/components/home/HotelsRestaurants";
+import { Events } from "@/components/home/Events";
+import { Tour360, MonumentsPresenter } from "@/components/home/Tour360";
+import { MapSection } from "@/components/home/MapSection";
+import { Booking } from "@/components/home/Booking";
+import { AIChat } from "@/components/home/AIChat";
+import { NewsSection, FAQSection, ContactSection, PartnersSection } from "@/components/home/Extras";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "SmartTour 360 — O'zbekiston rasmiy turizm portali" },
+      { name: "description", content: "Virtual 360° sayohatlar, mehmonxonalar, restoranlar, tadbirlar, taksi va chiptalar — bitta premium platformada." },
     ],
   }),
-  component: Index,
+  component: Home,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Home() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <>
+      <Hero />
+      <Destinations />
+      <Hotels />
+      <Restaurants />
+      <Events />
+      <Tour360 />
+      <MonumentsPresenter />
+      <MapSection />
+      <Booking />
+      <AIChat />
+      <NewsSection />
+      <PartnersSection />
+      <FAQSection />
+      <ContactSection />
+    </>
   );
 }
