@@ -96,12 +96,12 @@ export function Header() {
               </Link>
             )}
 
-            <Link to="/" hash="bookmarks" className="relative hidden size-9 place-items-center rounded-lg text-foreground/80 transition hover:bg-muted hover:text-primary md:grid" aria-label="Bookmarks">
+            <a href="/#destinations" className="relative hidden size-9 place-items-center rounded-lg text-foreground/80 transition hover:bg-muted hover:text-primary md:grid" aria-label="Bookmarks">
               <FaBookmark className="size-3.5" />
               {bookmarks.length > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-gold text-[10px] font-bold text-gold-foreground">{bookmarks.length}</span>
               )}
-            </Link>
+            </a>
 
             <button onClick={toggleTheme} className="grid size-9 place-items-center rounded-lg text-foreground/80 transition hover:bg-muted hover:text-primary" aria-label="Toggle theme">
               {theme === "dark" ? <FiSun className="size-4" /> : <FiMoon className="size-4" />}
