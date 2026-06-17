@@ -137,7 +137,7 @@ function ContentTable({ tab }: { tab: Tab }) {
                   <div className="flex items-center justify-end gap-1">
                     <button onClick={() => move((item as { id: string }).id, -1)} className="grid size-7 place-items-center rounded-lg hover:bg-muted"><FiArrowUp className="size-3.5" /></button>
                     <button onClick={() => move((item as { id: string }).id, 1)} className="grid size-7 place-items-center rounded-lg hover:bg-muted"><FiArrowDown className="size-3.5" /></button>
-                    <button onClick={() => { setEdit(item as Record<string, unknown>); setAdding(false); }} className="grid size-7 place-items-center rounded-lg text-primary hover:bg-primary/10"><FiEdit2 className="size-3.5" /></button>
+                    <button onClick={() => { setEdit(item as unknown as Record<string, unknown>); setAdding(false); }} className="grid size-7 place-items-center rounded-lg text-primary hover:bg-primary/10"><FiEdit2 className="size-3.5" /></button>
                     <button onClick={() => remove((item as { id: string }).id)} className="grid size-7 place-items-center rounded-lg text-destructive hover:bg-destructive/10"><FiTrash2 className="size-3.5" /></button>
                   </div>
                 </td>
