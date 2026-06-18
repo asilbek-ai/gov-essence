@@ -8,6 +8,7 @@ import {
 } from "react-icons/fi";
 import { FaGlobeAsia } from "react-icons/fa";
 import { useApp } from "@/context/AppContext";
+import { checkRateLimit, recordFail, recordSuccess, getFailCount, formatRemaining } from "@/utils/loginRateLimit";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
