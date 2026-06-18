@@ -45,7 +45,7 @@ interface AppContextValue {
   // toasts
   toasts: ToastMsg[]; toast: (m: Omit<ToastMsg, "id">) => void; dismissToast: (id: string) => void;
   // admin
-  isAdmin: boolean; loginAdmin: (pwd: string) => boolean; logoutAdmin: () => void;
+  isAdmin: boolean; loginAdmin: (pwd: string) => Promise<boolean>; logoutAdmin: () => void;
   // notifications (admin-side)
   unreadCount: number;
   // visitor counter
