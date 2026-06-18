@@ -125,23 +125,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
     return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
   };
-  const loginAdmin = useCallback((pwd: string) => {
-    // Synchronous wrapper — schedules async verification and returns optimistic boolean.
-    // We perform real verification synchronously via a sync hash isn't possible; use a small
-    // async IIFE and return a Promise-like by writing the token only on success.
-    void (async () => {
-      try {
-        const h = await sha256(pwd);
-        if (h === ADMIN_HASH) {
-          const token = (crypto.getRandomValues(new Uint8Array(24)) as Uint8Array)
-            .reduce((acc, b) => acc + b.toString(16).padStart(2, "0"), "");
-          window.sessionStorage.setItem("st_admin_token", token);
-          window.sessionStorage.setItem("st_admin_secret_v", SESSION_SECRET);
-          setIsAdminState(true);
-        }
-      } catch {}
-    })();
-    return true; // UI handles error feedback via post-check of isAdmin
+  const loginAdmin = useCallback(async (pwd: string): Promise<boolean> => {
+    try {
+      const h = await sha256(pwd);
+      if (h === ADMIN_HASH) {
+        const token = Array.from(crypto.getRandomValues(new Uint8Array(24)))
+          .map((b) => b.toString(16).padStart(2, "0")).join("");
+        window.sessionStorage.setItem("st_admin_token", token);
+        window.sessionStorage.setItem("st_admin_secret_v", SESSION_SECRET);
+        setIsAdminState(true);
+        return true;
+      }
+    } catch {}
+    return false;
   }, [ADMIN_HASH]);
   const logoutAdmin = useCallback(() => {
     try {
