@@ -1,5 +1,5 @@
 /* Admin layout — sidebar + auth gate */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, Link, useRouterState, createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
