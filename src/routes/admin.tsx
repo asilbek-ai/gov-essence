@@ -23,8 +23,57 @@ function AdminLayout() {
   const [open, setOpen] = useState(false);
   const [pwd, setPwd] = useState("");
   const [err, setErr] = useState("");
+  const [lockMs, setLockMs] = useState(0);
+  const [fails, setFails] = useState(0);
+  const [busy, setBusy] = useState(false);
+
+  // tick down lockout timer every second while locked
+  useEffect(() => {
+    if (isAdmin) return;
+    setLockMs(checkRateLimit());
+    setFails(getFailCount());
+    const t = setInterval(() => {
+      const r = checkRateLimit();
+      setLockMs(r);
+      if (r === 0) setFails(getFailCount());
+    }, 1000);
+    return () => clearInterval(t);
+  }, [isAdmin]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (busy) return;
+    const remaining = checkRateLimit();
+    if (remaining > 0) {
+      setLockMs(remaining);
+      setErr(`Juda ko'p urinish. ${formatRemaining(remaining)} dan keyin urinib ko'ring.`);
+      return;
+    }
+    setBusy(true);
+    const ok = await loginAdmin(pwd);
+    setBusy(false);
+    if (ok) {
+      recordSuccess();
+      setErr("");
+      setLockMs(0);
+      setFails(0);
+    } else {
+      const lock = recordFail();
+      const newFails = getFailCount();
+      setFails(newFails);
+      setPwd("");
+      if (lock > 0) {
+        setLockMs(lock);
+        setErr(`Parol noto'g'ri. Hisob ${formatRemaining(lock)} ga bloklandi.`);
+      } else {
+        const left = Math.max(0, 5 - newFails);
+        setErr(left > 0 ? `Parol noto'g'ri. Bloklashgacha ${left} urinish qoldi.` : "Parol noto'g'ri.");
+      }
+    }
+  };
 
   if (!isAdmin) {
+    const locked = lockMs > 0;
     return (
       <div className="grid min-h-screen place-items-center gradient-hero-bg px-4 py-12">
         <motion.div initial={{ opacity: 0, y: 12, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="glass-strong w-full max-w-md p-8 text-white shadow-strong">
@@ -33,10 +82,28 @@ function AdminLayout() {
           </div>
           <h1 className="mt-5 text-center font-display text-2xl font-extrabold">Admin Panelga kirish</h1>
           <p className="mt-2 text-center text-sm text-white/70">Faqat vakolatli xodimlar uchun. Parol talab qilinadi.</p>
-          <form onSubmit={async (e) => { e.preventDefault(); const ok = await loginAdmin(pwd); if (!ok) setErr("Parol noto'g'ri"); else setErr(""); }} className="mt-6 space-y-3">
-            <input type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Parol" autoComplete="current-password" className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/30" />
+          <form onSubmit={handleSubmit} className="mt-6 space-y-3">
+            <input
+              type="password"
+              value={pwd}
+              onChange={(e) => setPwd(e.target.value)}
+              placeholder={locked ? "Bloklangan" : "Parol"}
+              autoComplete="current-password"
+              disabled={locked || busy}
+              className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/30 disabled:cursor-not-allowed disabled:opacity-60"
+            />
             {err && <div className="rounded-lg bg-red-500/20 px-3 py-2 text-sm text-red-100">{err}</div>}
-            <button type="submit" className="w-full rounded-xl bg-gradient-to-r from-gold to-amber-500 py-3 text-base font-bold text-gold-foreground shadow-gold transition hover:scale-[1.02]">Kirish</button>
+            {locked && (
+              <div className="rounded-lg bg-amber-500/20 px-3 py-2 text-center text-xs text-amber-100">
+                Brute-force himoyasi faol. Qoldi: <span className="font-mono font-bold">{formatRemaining(lockMs)}</span>
+              </div>
+            )}
+            <button type="submit" disabled={locked || busy} className="w-full rounded-xl bg-gradient-to-r from-gold to-amber-500 py-3 text-base font-bold text-gold-foreground shadow-gold transition hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100">
+              {busy ? "Tekshirilmoqda..." : locked ? `Kuting (${formatRemaining(lockMs)})` : "Kirish"}
+            </button>
+            {fails > 0 && !locked && (
+              <div className="text-center text-[11px] text-white/50">Muvaffaqiyatsiz urinishlar: {fails}</div>
+            )}
             <Link to="/" className="block text-center text-xs text-white/60 underline-offset-4 transition hover:text-white hover:underline">← Bosh sahifaga qaytish</Link>
           </form>
         </motion.div>
