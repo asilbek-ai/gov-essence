@@ -90,7 +90,7 @@ export function Hero() {
             </div>
             <div className="mt-4 flex items-center gap-2 rounded-2xl bg-emerald-500/15 p-3 text-xs text-white ring-1 ring-emerald-400/30">
               <div className="size-2 animate-pulse rounded-full bg-emerald-400" />
-              <span>Live: {stats.visitors.toLocaleString()} tashriflar bugun</span>
+              <span suppressHydrationWarning>Live: {stats.visitors.toLocaleString("en-US")} tashriflar bugun</span>
             </div>
           </div>
         </motion.div>
