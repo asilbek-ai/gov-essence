@@ -74,7 +74,7 @@ export function Footer() {
           <div className="mt-5 rounded-2xl border border-border bg-muted/40 p-3 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Bugungi tashriflar</span>
-              <span className="font-mono font-bold text-primary">{visitorCount.toLocaleString()}</span>
+              <span className="font-mono font-bold text-primary" suppressHydrationWarning>{mounted ? visitorCount.toLocaleString() : "—"}</span>
             </div>
           </div>
         </div>
