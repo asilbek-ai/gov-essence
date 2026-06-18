@@ -86,7 +86,7 @@ function Settings() {
           <FiInfo className="mt-0.5 size-4 shrink-0" />
           <div>
             <div className="font-bold">Admin parol</div>
-            <div className="mt-1 opacity-90">Default parol: <span className="rounded bg-amber-500/20 px-1.5 py-0.5 font-mono">admin123</span>. Production uchun kontekstda o'zgartiring.</div>
+            <div className="mt-1 opacity-90">Parol SHA-256 hash sifatida tekshiriladi va faqat joriy sessiyada (sessionStorage) saqlanadi. Production muhitda <span className="rounded bg-amber-500/20 px-1.5 py-0.5 font-mono">VITE_ADMIN_PASSWORD_HASH</span> environment o'zgaruvchisini sozlang.</div>
           </div>
         </div>
       </div>
