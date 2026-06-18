@@ -107,13 +107,53 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setTimeout(() => dismissToast(id), 4500);
   }, [dismissToast]);
 
-  // admin
-  const [isAdmin, setIsAdmin] = useLocalStorage<boolean>("st_is_admin", false);
+  // admin — sessionStorage only (cleared on tab close); password is SHA-256 compared
+  // Default password hash corresponds to a secret that must be configured via
+  // VITE_ADMIN_PASSWORD_HASH at deploy time. The literal password is NOT in source.
+  const ADMIN_HASH = (import.meta.env.VITE_ADMIN_PASSWORD_HASH as string | undefined)
+    || "614802f3ef19fb017be5599a7869269b7aa5ed2ba234ffa881eb2c4a85c43da2";
+  const SESSION_SECRET = "st_admin_session_v1";
+  const [isAdmin, setIsAdminState] = useState<boolean>(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const tok = window.sessionStorage.getItem("st_admin_token");
+      if (tok && tok.length >= 32) setIsAdminState(true);
+    } catch {}
+  }, []);
+  const sha256 = async (s: string) => {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+    return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  };
   const loginAdmin = useCallback((pwd: string) => {
-    if (pwd === "admin123") { setIsAdmin(true); return true; }
-    return false;
-  }, [setIsAdmin]);
-  const logoutAdmin = useCallback(() => setIsAdmin(false), [setIsAdmin]);
+    // Synchronous wrapper — schedules async verification and returns optimistic boolean.
+    // We perform real verification synchronously via a sync hash isn't possible; use a small
+    // async IIFE and return a Promise-like by writing the token only on success.
+    void (async () => {
+      try {
+        const h = await sha256(pwd);
+        if (h === ADMIN_HASH) {
+          const token = (crypto.getRandomValues(new Uint8Array(24)) as Uint8Array)
+            .reduce((acc, b) => acc + b.toString(16).padStart(2, "0"), "");
+          window.sessionStorage.setItem("st_admin_token", token);
+          window.sessionStorage.setItem("st_admin_secret_v", SESSION_SECRET);
+          setIsAdminState(true);
+        }
+      } catch {}
+    })();
+    return true; // UI handles error feedback via post-check of isAdmin
+  }, [ADMIN_HASH]);
+  const logoutAdmin = useCallback(() => {
+    try {
+      window.sessionStorage.removeItem("st_admin_token");
+      window.sessionStorage.removeItem("st_admin_secret_v");
+    } catch {}
+    setIsAdminState(false);
+  }, []);
+  // Clean up any legacy localStorage flag from earlier versions
+  useEffect(() => {
+    try { window.localStorage.removeItem("st_is_admin"); } catch {}
+  }, []);
 
   // visitor
   const [visitorCount, setVisitorCount] = useLocalStorage<number>("st_visitors", 12483);
