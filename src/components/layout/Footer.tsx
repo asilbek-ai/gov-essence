@@ -84,6 +84,8 @@ export function Footer() {
         <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground md:flex-row">
           <div>{tr("footer_legal", lang)}</div>
           <div className="flex items-center gap-3">
+            <Link to="/trust" className="transition hover:text-primary">Ishonch va xavfsizlik</Link>
+            <span>•</span>
             <a href="#" className="transition hover:text-primary">Maxfiylik siyosati</a>
             <span>•</span>
             <a href="#" className="transition hover:text-primary">Foydalanish shartlari</a>
