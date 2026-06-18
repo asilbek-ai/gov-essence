@@ -111,7 +111,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   // Default password hash corresponds to a secret that must be configured via
   // VITE_ADMIN_PASSWORD_HASH at deploy time. The literal password is NOT in source.
   const ADMIN_HASH = (import.meta.env.VITE_ADMIN_PASSWORD_HASH as string | undefined)
-    || "614802f3ef19fb017be5599a7869269b7aa5ed2ba234ffa881eb2c4a85c43da2";
+    || "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
   const SESSION_SECRET = "st_admin_session_v1";
   const [isAdmin, setIsAdminState] = useState<boolean>(false);
   useEffect(() => {
