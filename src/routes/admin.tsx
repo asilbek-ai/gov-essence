@@ -31,9 +31,9 @@ function AdminLayout() {
             <FiLock className="size-7" />
           </div>
           <h1 className="mt-5 text-center font-display text-2xl font-extrabold">Admin Panelga kirish</h1>
-          <p className="mt-2 text-center text-sm text-white/70">Parolni kiriting (default: <span className="rounded bg-white/10 px-1.5 py-0.5 font-mono">admin123</span>)</p>
-          <form onSubmit={(e) => { e.preventDefault(); if (!loginAdmin(pwd)) setErr("Parol noto'g'ri"); else setErr(""); }} className="mt-6 space-y-3">
-            <input type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Parol" className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/30" />
+          <p className="mt-2 text-center text-sm text-white/70">Faqat vakolatli xodimlar uchun. Parol talab qilinadi.</p>
+          <form onSubmit={async (e) => { e.preventDefault(); const ok = await loginAdmin(pwd); if (!ok) setErr("Parol noto'g'ri"); else setErr(""); }} className="mt-6 space-y-3">
+            <input type="password" value={pwd} onChange={(e) => setPwd(e.target.value)} placeholder="Parol" autoComplete="current-password" className="w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-white/40 outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/30" />
             {err && <div className="rounded-lg bg-red-500/20 px-3 py-2 text-sm text-red-100">{err}</div>}
             <button type="submit" className="w-full rounded-xl bg-gradient-to-r from-gold to-amber-500 py-3 text-base font-bold text-gold-foreground shadow-gold transition hover:scale-[1.02]">Kirish</button>
             <Link to="/" className="block text-center text-xs text-white/60 underline-offset-4 transition hover:text-white hover:underline">← Bosh sahifaga qaytish</Link>

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrustRouteImport } from './routes/trust'
 import { Route as MurojaatRouteImport } from './routes/murojaat'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminMurojaatlarRouteImport } from './routes/admin.murojaatlar'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 
+const TrustRoute = TrustRouteImport.update({
+  id: '/trust',
+  path: '/trust',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MurojaatRoute = MurojaatRouteImport.update({
   id: '/murojaat',
   path: '/murojaat',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/murojaat': typeof MurojaatRoute
+  '/trust': typeof TrustRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/murojaatlar': typeof AdminMurojaatlarRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -65,6 +72,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/murojaat': typeof MurojaatRoute
+  '/trust': typeof TrustRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/murojaatlar': typeof AdminMurojaatlarRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -75,6 +83,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/murojaat': typeof MurojaatRoute
+  '/trust': typeof TrustRoute
   '/admin/content': typeof AdminContentRoute
   '/admin/murojaatlar': typeof AdminMurojaatlarRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -86,6 +95,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/murojaat'
+    | '/trust'
     | '/admin/content'
     | '/admin/murojaatlar'
     | '/admin/settings'
@@ -94,6 +104,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/murojaat'
+    | '/trust'
     | '/admin/content'
     | '/admin/murojaatlar'
     | '/admin/settings'
@@ -103,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/murojaat'
+    | '/trust'
     | '/admin/content'
     | '/admin/murojaatlar'
     | '/admin/settings'
@@ -113,10 +125,18 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   MurojaatRoute: typeof MurojaatRoute
+  TrustRoute: typeof TrustRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trust': {
+      id: '/trust'
+      path: '/trust'
+      fullPath: '/trust'
+      preLoaderRoute: typeof TrustRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/murojaat': {
       id: '/murojaat'
       path: '/murojaat'
@@ -189,6 +209,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   MurojaatRoute: MurojaatRoute,
+  TrustRoute: TrustRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

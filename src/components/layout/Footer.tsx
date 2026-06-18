@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaGlobeAsia, FaFacebook, FaInstagram, FaTelegram, FaYoutube, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { useApp } from "@/context/AppContext";
@@ -5,6 +6,8 @@ import { tr } from "@/utils/translations";
 
 export function Footer() {
   const { lang, visitorCount } = useApp();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   return (
     <footer className="relative mt-24 overflow-hidden border-t border-border bg-card">
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary-glow to-gold" />
@@ -71,7 +74,7 @@ export function Footer() {
           <div className="mt-5 rounded-2xl border border-border bg-muted/40 p-3 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Bugungi tashriflar</span>
-              <span className="font-mono font-bold text-primary">{visitorCount.toLocaleString()}</span>
+              <span className="font-mono font-bold text-primary" suppressHydrationWarning>{mounted ? visitorCount.toLocaleString() : "—"}</span>
             </div>
           </div>
         </div>
@@ -81,6 +84,8 @@ export function Footer() {
         <div className="container mx-auto flex flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground md:flex-row">
           <div>{tr("footer_legal", lang)}</div>
           <div className="flex items-center gap-3">
+            <Link to="/trust" className="transition hover:text-primary">Ishonch va xavfsizlik</Link>
+            <span>•</span>
             <a href="#" className="transition hover:text-primary">Maxfiylik siyosati</a>
             <span>•</span>
             <a href="#" className="transition hover:text-primary">Foydalanish shartlari</a>
