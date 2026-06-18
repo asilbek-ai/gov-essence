@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaGlobeAsia, FaFacebook, FaInstagram, FaTelegram, FaYoutube, FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import { useApp } from "@/context/AppContext";
@@ -5,6 +6,8 @@ import { tr } from "@/utils/translations";
 
 export function Footer() {
   const { lang, visitorCount } = useApp();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   return (
     <footer className="relative mt-24 overflow-hidden border-t border-border bg-card">
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary via-primary-glow to-gold" />
